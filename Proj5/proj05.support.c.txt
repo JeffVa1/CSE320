@@ -1,0 +1,106 @@
+#include "/user/cse320/Projects/project05.support.h"
+#include <stdio.h>
+
+//	Jeffrey Valentic
+//	10/7/2020
+//	CSE 320 Project 5
+//	Support
+
+int convert(const char ch[], int base, int *conversion)
+{
+    int valid_value = 0;
+    int negative = 0;
+    int positive = 1;
+    int i = 0;
+    *conversion = 0;
+
+    //CHECK FOR VALID BASE (2-36)
+    if (base < 1 || base > 36) {return 0;}
+
+    //loops until '\0' is found at ch[i]
+    for (i = 0; ch[i] != '\0'; ++i)
+    {
+        
+	//HANDLES WHITESPACE
+        if (ch[i] == '\t' || ch[i] == ' ' || ch[i] == '\n')
+        {
+            if (valid_value != 0){break;}
+        }
+	
+	//HANDLES CAPITALS
+        else if ((ch[i] >= 'A') && (ch[i] <= 'Z'))
+        {
+            int value = ((ch[i] - 'A') + 10);
+            if (value >= base)
+            {
+                if (valid_value != 0){break;}
+                return 0;
+            }
+            *conversion = value + (base * (*conversion));
+            valid_value++;
+        }
+
+	//HANDLES LOWER CASE
+        else if ((ch[i] >= 'a') && (ch[i] <= 'z'))
+        {
+            int value = ((ch[i] - 'a') + 10);
+            if (value >= base)
+            {
+                if (valid_value != 0){break;}
+                return 0;
+            }
+            *conversion = value + (base * (*conversion));
+            valid_value++;
+        }
+
+	//HANDLES NUMBERS
+        else if ((ch[i] >= '0') && (ch[i] <= '9'))
+        {
+            int value = (ch[i] - '0');
+            if (value >= base)
+            {
+                if (valid_value != 0){break;}
+                return 0;
+            }
+            *conversion = value + (base * (*conversion));
+            valid_value++;
+        }
+
+	//HANDLES POSITIVES
+        else if (ch[i] == '+' || ch[i] == '-') 
+        {
+            if (valid_value != 0){break;}
+		
+	    else if (ch[i] == '-')
+            {
+                positive = 0;
+                negative = 1;
+            }
+
+            else if (ch[i] == '+')
+            {
+                positive = 1;
+                negative = 0;
+            }
+            
+        }
+
+	//HANDLES CHARACTERS NOT PREVIOUSLY ACCOUNTED FOR
+        else
+        {
+            if (valid_value != 0){break;}
+            return 0;
+        }
+    }
+
+    //HANDLES WHITESPACE CONVERSION LIMITATIONS
+    if (valid_value == 0){return 0;}
+
+    //INVERTS NEGATIVES
+    if (negative == 1)
+    {
+        *conversion = 0 - *conversion;
+    }
+    
+    return 1;
+}
